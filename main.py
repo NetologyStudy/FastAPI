@@ -55,10 +55,9 @@ def change_hotel(
         name: str = Body(),
 ):
     global hotels
-    for hotel in hotels:
-        if hotel["id"] == hotel_id:
-            hotel["title"] = title
-            hotel["name"] = name
+    hotel = [hotel for hotel in hotels if hotel['id'] == hotel_id][0]
+    hotel["title"] = title
+    hotel["name"] = name
     return {"status": "OK"}
 
 # Разумеется здесь нужен Pydentic, но я стесняюсь :>
@@ -69,18 +68,12 @@ def change_hotel(
         name: str | None = Body(None)
 ):
     global hotels
-    for hotel in hotels:
-        if hotel_id == hotel["id"]:
-            if name is None and title:
-                hotel["title"] = title
-            if title is None and name:
-                hotel["name"] = name
-            if title and name:
-                hotel["title"] = title
-                hotel["name"] = name
-    return hotels
-
-
+    hotel = [hotel for hotel in hotels if hotel['id'] == hotel_id][0]
+    if name is None:
+        hotel["title"] = title
+    if title is None:
+        hotel["name"] = name
+    return {"status": "OK"}
 
 
 @app.get("/docs", include_in_schema=False)
