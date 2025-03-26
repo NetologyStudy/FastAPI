@@ -1,79 +1,12 @@
-from fastapi import FastAPI, Query, Body
+from fastapi import FastAPI
 from fastapi.openapi.docs import get_swagger_ui_html
 import uvicorn
+from hotels import router as router_hotels
 
 
 app = FastAPI(docs_url=None)
 
-
-hotels = [
-    {"id": 1, "title": "Sochi", "name": "sochi"},
-    {"id": 2, "title": "Дубай", "name": "dubai"},
-]
-
-
-@app.get("/hotels")
-def get_hotels(
-        id: int | None = Query(None, description="Айдишник"),
-        title: str | None = Query(None, description="Название отеля"),
-):
-    hotels_ = []
-    for hotel in hotels:
-        if id and hotel["id"] != id:
-            continue
-        if title and hotel["title"] != title:
-            continue
-        hotels_.append(hotel)
-    return hotels_
-
-
-@app.post("/hotels")
-def create_hotel(
-        title: str = Body(),
-        name: str = Body()
-):
-    global hotels
-    hotels.append({
-        "id": hotels[-1]['id'] + 1,
-        "title": title,
-        "name": name
-})
-    return {"status": "OK"}
-
-
-@app.delete("/hotels/{hotel_id}")
-def delete_hotel(hotel_id: int):
-    global hotels
-    hotels = [hotel for hotel in hotels if hotel["id"] != hotel_id]
-    return {"status": "OK"}
-
-
-@app.put("/hotels/{hotel_id}")
-def change_hotel(
-        hotel_id: int,
-        title: str = Body(),
-        name: str = Body(),
-):
-    global hotels
-    hotel = [hotel for hotel in hotels if hotel['id'] == hotel_id][0]
-    hotel["title"] = title
-    hotel["name"] = name
-    return {"status": "OK"}
-
-# Разумеется здесь нужен Pydentic, но я стесняюсь :>
-@app.patch("/hotels/{hotel_id}")
-def change_hotel(
-        hotel_id: int,
-        title: str | None = Body(None),
-        name: str | None = Body(None)
-):
-    global hotels
-    hotel = [hotel for hotel in hotels if hotel['id'] == hotel_id][0]
-    if name is None:
-        hotel["title"] = title
-    if title is None:
-        hotel["name"] = name
-    return {"status": "OK"}
+app.include_router(router_hotels)
 
 
 @app.get("/docs", include_in_schema=False)
