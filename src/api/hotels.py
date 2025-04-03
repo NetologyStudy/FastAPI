@@ -1,5 +1,5 @@
 from fastapi import Query, APIRouter, Body
-from sqlalchemy import insert
+from sqlalchemy import insert, select
 
 from src.database import async_session_maker, engine
 from src.models.hotels import HotelsOrm
@@ -20,20 +20,18 @@ hotels = [
 
 
 @router.get("", summary="Получение данных об отелях", description="<h1>Получаем полный список всех отелей</h1>")
-def get_hotels(
+async def get_hotels(
         pagination: PaginationDep,
         id: int | None = Query(None, description="Айдишник"),
         title: str | None = Query(None, description="Название отеля"),
 ):
-    hotels_ = []
-    for hotel in hotels:
-        if id and hotel["id"] != id:
-            continue
-        if title and hotel["title"] != title:
-            continue
-        hotels_.append(hotel)
-    start = (pagination.page - 1) * pagination.per_page
-    return hotels_[start:start + pagination.per_page]
+    async with async_session_maker() as session:
+        query = select(HotelsOrm)
+        result = await session.execute(query)
+        hotels = result.scalars().all()
+        return hotels
+    # start = (pagination.page - 1) * pagination.per_page
+    # return hotels_[start:start + pagination.per_page]
 
 
 @router.post("", summary="Добавление данных нового отеля")
