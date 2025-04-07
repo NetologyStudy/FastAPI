@@ -21,7 +21,7 @@ async def get_hotels(
         if id:
             query = query.filter_by(id=id)
         if title:
-            query = query.filter_by(title=title)
+            query = query.filter(HotelsOrm.title.ilike(f"%{title}%"))
         query = (
             query
             .limit(per_page)
@@ -39,23 +39,23 @@ async def create_hotel(hotel_data: Hotel = Body(openapi_examples={
     "1": {
         "summary": "Сочи",
         "value": {
-            "title": "Отель Сочи 5 звезд у моря",
-            "location": "ул. Моря 1",
+            "title": "Отель Rich 5 звезд у моря",
+            "location": "Сочи, ул. Моря 1",
         }
     },
     "2": {
         "summary": "Дубай",
         "value": {
-            "title": "Отель Дубай у фонтана",
-            "location": "ул. Шейха 2",
+            "title": "Отель Deluxe у фонтана",
+            "location": "Дубай, ул. Шейха 2",
         }
     }
 })
 ):
     async with async_session_maker() as session:
         add_hotel_stmt = insert(HotelsOrm).values(**hotel_data.model_dump())
-        # смотрим что за запрос и с какими данными отправляется в нашу БД
-        print(add_hotel_stmt.compile(engine, compile_kwargs={"literal_binds": True}))
+        # смотрим, что за запрос и с какими данными отправляется в нашу БД
+        # print(add_hotel_stmt.compile(engine, compile_kwargs={"literal_binds": True}))
         await session.execute(add_hotel_stmt)
         await session.commit()
     return {"status": "OK"}
