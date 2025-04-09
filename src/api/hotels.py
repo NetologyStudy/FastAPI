@@ -1,4 +1,4 @@
-from fastapi import Query, APIRouter, Body
+from fastapi import Query, APIRouter, Body, HTTPException
 from sqlalchemy import insert, select
 
 from src.database import async_session_maker, engine
@@ -52,19 +52,20 @@ async def create_hotel(hotel_data: Hotel = Body(openapi_examples={
 
 
 @router.delete("/{hotel_id}", summary="Удаление данных отеля")
-def delete_hotel(hotel_id: int):
-    global hotels
-    hotels = [hotel for hotel in hotels if hotel["id"] != hotel_id]
+async def delete_hotel(hotel_id: int):
+    async with async_session_maker() as session:
+        await HotelsRepositories(session).delete(id=hotel_id)
+        await session.commit()
     return {"status": "OK"}
+
+
 
 
 @router.put("/{hotel_id}", summary="Полное обновление данных об отеле")
-def edit_hotel(hotel_id: int, hotel_data: Hotel):
-    global hotels
-    hotel = [hotel for hotel in hotels if hotel['id'] == hotel_id][0]
-    hotel["title"] = hotel_data.title
-    hotel["name"] = hotel_data.name
-    return {"status": "OK"}
+async def edit_hotel(hotel_id: int, hotel_data: Hotel):
+    async with async_session_maker() as session:
+        await HotelsRepositories(session).edit(hotel_data, id=hotel_id)
+        await session.commit()
 
 
 @router.patch("/{hotel_id}", summary="Частичное обновление данных об отеле")
