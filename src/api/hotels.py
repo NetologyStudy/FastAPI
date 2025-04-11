@@ -1,4 +1,4 @@
-from fastapi import Query, APIRouter, Body
+from fastapi import Query, APIRouter, Body, Path
 
 from src.database import async_session_maker
 from src.reposittories.hotels import HotelsRepositories
@@ -27,9 +27,9 @@ async def get_hotels(
 @router.get("/{hotel_id}",
             summary="Получение данных одного отеля",
             description="<h1>Получение данных одного отеля по его id<h1>")
-async def get_hotel(id: int = Query(description="Идентификатор отеля")):
+async def get_hotel(hotel_id: int = Path(description="Уникальный идентификатор отеля", ge=1)):
     async with async_session_maker() as session:
-        return await HotelsRepositories(session).get_one_or_one(id=id)
+        return await HotelsRepositories(session).get_one_or_one(id=hotel_id)
 
 
 @router.post("", summary="Добавление данных нового отеля")
