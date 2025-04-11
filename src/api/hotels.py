@@ -24,6 +24,13 @@ async def get_hotels(
         )
 
 
+@router.get("/{hotel_id}",
+            summary="Получение данных одного отеля",
+            description="<h1>Получение данных одного отеля по его id<h1>")
+async def get_hotel(id: int = Query(description="Идентификатор отеля")):
+    async with async_session_maker() as session:
+        return await HotelsRepositories(session).get_one_or_one(id=id)
+
 
 @router.post("", summary="Добавление данных нового отеля")
 async def create_hotel(hotel_data: Hotel = Body(openapi_examples={
@@ -55,8 +62,6 @@ async def delete_hotel(hotel_id: int):
         await HotelsRepositories(session).delete(id=hotel_id)
         await session.commit()
     return {"status": "OK"}
-
-
 
 
 @router.put("/{hotel_id}", summary="Полное обновление данных об отеле")
