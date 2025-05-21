@@ -37,6 +37,7 @@ async def login_user(
             raise HTTPException(status_code=401, detail="Пароль неверный")
         access_token = AuthService().create_access_token({"user_id": user.id})
         response.set_cookie("access_token", access_token)
+        response.delete_cookie(key=access_token)
         return {"access_token": access_token}
 
 
@@ -45,3 +46,9 @@ async def get_me(user_id: UserIdDep):
     async with async_session_maker() as session:
         user = await UsersRepositories(session).get_one_or_one(id=user_id)
         return user
+
+
+@router.get("/logout")
+async def logout_user(response: Response):
+    response.delete_cookie(key="access_token")
+    return {"status": "OK"}
