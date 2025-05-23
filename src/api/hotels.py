@@ -56,7 +56,9 @@ async def create_hotel(hotel_data: HotelAdd = Body(openapi_examples={
     return {"status": "OK", "data": hotel}
 
 
-@router.delete("/{hotel_id}", summary="Удаление данных отеля")
+@router.delete("/{hotel_id}",
+               summary="Удаление данных отеля",
+               description="<h1>Полное удаление отеля по его id<h1>")
 async def delete_hotel(hotel_id: int):
     async with async_session_maker() as session:
         await HotelsRepositories(session).delete(id=hotel_id)

@@ -1,4 +1,5 @@
 from sqlalchemy import select
+
 from src.reposittories.base import BaseRepositories
 from src.models.hotels import HotelsOrm
 from src.schemas.hotels import Hotel
