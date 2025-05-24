@@ -4,13 +4,20 @@ from pydantic import BaseModel, Field
 class RoomAdd(BaseModel):
     hotel_id: int
     title: str
-    description: str
+    description: str | None = Field(None)
     price: int
     quantity: int
 
 
 class Room(RoomAdd):
     id: int
+
+
+class RoomPUT(BaseModel):
+    title: str
+    description: str | None = Field(None)
+    price: int
+    quantity: int
 
 
 class RoomPATCH(BaseModel):
