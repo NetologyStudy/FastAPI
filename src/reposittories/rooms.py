@@ -1,10 +1,10 @@
 from sqlalchemy import select
 
-from src.reposittories.base import BaseRepositories
+from src.reposittories.base import BaseRepository
 from src.models.rooms import RoomsOrm
 from src.schemas.rooms import Room
 
 
-class RoomsRepositories(BaseRepositories):
+class RoomsRepository(BaseRepository):
     model = RoomsOrm
     schema = Room

@@ -1,11 +1,11 @@
 from sqlalchemy import select
 
-from src.reposittories.base import BaseRepositories
+from src.reposittories.base import BaseRepository
 from src.models.hotels import HotelsOrm
 from src.schemas.hotels import Hotel
 
 
-class HotelsRepositories(BaseRepositories):
+class HotelsRepository(BaseRepository):
     model = HotelsOrm
     schema = Hotel
 

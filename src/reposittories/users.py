@@ -2,11 +2,11 @@ from sqlalchemy import select
 from pydantic import EmailStr
 
 from src.models.users import UsersOrm
-from src.reposittories.base import BaseRepositories
+from src.reposittories.base import BaseRepository
 from src.schemas.users import User, UserWithHashedPassword
 
 
-class UsersRepositories(BaseRepositories):
+class UsersRepository(BaseRepository):
     model = UsersOrm
     schema = User
 
