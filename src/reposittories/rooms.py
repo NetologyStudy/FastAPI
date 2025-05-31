@@ -1,5 +1,3 @@
-from sqlalchemy import select
-
 from src.reposittories.base import BaseRepository
 from src.models.rooms import RoomsOrm
 from src.schemas.rooms import Room
