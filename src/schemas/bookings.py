@@ -1,6 +1,6 @@
-from datetime import date
+from datetime import date, datetime, timezone
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class BookingAddRequest(BaseModel):
@@ -15,6 +15,7 @@ class BookingAdd(BaseModel):
     date_from: date
     date_to: date
     price: int
+    created_add: datetime = Field(datetime.now(timezone.utc).replace(tzinfo=None))
 
 
 class Booking(BookingAdd):
