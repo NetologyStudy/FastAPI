@@ -23,3 +23,16 @@ async def post_booking(
     await db.commit()
 
     return {"status": "OK", "data": booking}
+
+
+@router.get("", summary="Получение информации о всех бронированиях")
+async def get_booking(db: DBDep):
+    return await db.bookings.get_all()
+
+
+@router.get("/me", summary="Получение информации о бронированиях текущего пользователя")
+async def get_me_booking(
+        db: DBDep,
+        user_id: UserIdDep
+):
+    return await db.bookings.get_filtered(user_id=user_id)
